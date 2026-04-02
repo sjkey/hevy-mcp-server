@@ -5,10 +5,11 @@ import githubHandler from "./github-handler.js";
 import { createMcpRoutes } from "./routes/mcp.js";
 import utilityRoutes from "./routes/utility.js";
 import { mcpHandlers } from "./mcp-handlers.js";
+import type { MyMCP } from "./mcp-agent.js";
 
 // Environment interface for OAuth multi-user support
 interface Env {
-	MCP_OBJECT: DurableObjectNamespace;
+	MCP_OBJECT: DurableObjectNamespace<MyMCP>;
 	OAUTH_KV: KVNamespace;
 	GITHUB_CLIENT_ID: string;
 	GITHUB_CLIENT_SECRET: string;

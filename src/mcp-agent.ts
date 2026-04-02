@@ -29,7 +29,7 @@ import { getUserApiKey } from "./lib/key-storage.js";
 
 // Environment interface for OAuth multi-user support
 interface Env {
-	MCP_OBJECT: DurableObjectNamespace;
+	MCP_OBJECT: DurableObjectNamespace<MyMCP>;
 	OAUTH_KV: KVNamespace;
 	GITHUB_CLIENT_ID: string;
 	GITHUB_CLIENT_SECRET: string;
