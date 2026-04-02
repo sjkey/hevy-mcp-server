@@ -1,54 +1,37 @@
 import { createMiddleware } from "hono/factory";
-import type { Props } from "../utils.js";
-
-interface Env {
-	OAUTH_KV: KVNamespace;
-}
-
-interface Variables {
-	props: Props;
-}
+import type { Env, Variables } from "../app.js";
 
 /**
- * Bearer token authentication middleware
- * Validates Authorization header and stores user props in context
+ * Bearer token authentication middleware.
+ * Compares the Authorization header against the MCP_AUTH_TOKEN secret.
  */
 export const bearerAuth = createMiddleware<{ Bindings: Env; Variables: Variables }>(
-	async (c, next) => {
-		const authHeader = c.req.header("Authorization");
+  async (c, next) => {
+    const authHeader = c.req.header("Authorization");
 
-		if (!authHeader || !authHeader.startsWith("Bearer ")) {
-			const wwwAuthenticateValue = `Bearer realm="${c.req.url}", error="invalid_token"`;
-			
-			return c.json(
-				{
-					error: "unauthorized",
-					message: "Authentication required. Please provide a valid Bearer token.",
-				},
-				401,
-				{
-					"WWW-Authenticate": wwwAuthenticateValue,
-				}
-			);
-		}
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return c.json(
+        {
+          error: "unauthorized",
+          message: "Authentication required. Please provide a valid Bearer token.",
+        },
+        401,
+        {
+          "WWW-Authenticate": `Bearer realm="${c.req.url}", error="invalid_token"`,
+        }
+      );
+    }
 
-		const token = authHeader.substring(7); // Remove "Bearer " prefix
-		const sessionData = await c.env.OAUTH_KV.get(`session:${token}`, "json");
+    const token = authHeader.substring(7);
 
-		if (!sessionData || typeof sessionData !== "object") {
-			return c.json(
-				{
-					error: "unauthorized",
-					message: "Invalid token.",
-				},
-				401
-			);
-		}
+    if (!token || token !== c.env.MCP_AUTH_TOKEN) {
+      return c.json(
+        { error: "unauthorized", message: "Invalid token." },
+        401
+      );
+    }
 
-		// Store props in context variables
-		c.set("props", sessionData as Props);
-
-		await next();
-	}
+    c.set("authenticated", true);
+    await next();
+  }
 );
-
