@@ -34,7 +34,6 @@
 		"test:run": "vitest run"
 	},
 	"dependencies": {
-		"@cloudflare/workers-oauth-provider": "^0.4.0",
 		"@modelcontextprotocol/sdk": "^1.29.0",
 		"agents": "^0.9.0",
 		"hono": "^4.12.9",
