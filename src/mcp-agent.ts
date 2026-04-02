@@ -25,11 +25,13 @@ import {
 } from "./lib/transforms.js";
 import { handleError } from "./lib/errors.js";
 
-// Single-user environment
 interface Env {
 	MCP_OBJECT: DurableObjectNamespace<MyMCP>;
 	HEVY_API_KEY: string;
 	MCP_AUTH_TOKEN: string;
+	OAUTH_CLIENT_ID: string;
+	OAUTH_CLIENT_SECRET: string;
+	OAUTH_KV: KVNamespace;
 }
 
 // Define our MCP agent with Hevy API tools

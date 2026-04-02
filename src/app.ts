@@ -3,12 +3,15 @@ import { createMcpRoutes } from "./routes/mcp.js";
 import utilityRoutes from "./routes/utility.js";
 import { mcpHandlers } from "./mcp-handlers.js";
 import type { MyMCP } from "./mcp-agent.js";
+import oauthRoutes from "./oauth.js";
 
-// Single-user environment — no OAuth, no KV sessions
 export interface Env {
   MCP_OBJECT: DurableObjectNamespace<MyMCP>;
   HEVY_API_KEY: string;
   MCP_AUTH_TOKEN: string;
+  OAUTH_CLIENT_ID: string;
+  OAUTH_CLIENT_SECRET: string;
+  OAUTH_KV: KVNamespace;
 }
 
 export interface Variables {
@@ -48,6 +51,7 @@ app.onError((err, c) => {
 });
 
 // Mount routes
+app.route("/", oauthRoutes);               // OAuth (highest priority)
 app.route("/", createMcpRoutes(mcpHandlers));
 app.route("/", utilityRoutes);
 
