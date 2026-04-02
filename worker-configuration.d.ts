@@ -7,10 +7,8 @@ declare namespace Cloudflare {
 		durableNamespaces: "MyMCP";
 	}
 	interface Env {
-		OAUTH_KV: KVNamespace;
-		GITHUB_CLIENT_ID: string;
-		GITHUB_CLIENT_SECRET: string;
-		COOKIE_ENCRYPTION_KEY: string;
+		HEVY_API_KEY: string;
+		MCP_AUTH_TOKEN: string;
 		MCP_OBJECT: DurableObjectNamespace<import("./src/index").MyMCP>;
 	}
 }
